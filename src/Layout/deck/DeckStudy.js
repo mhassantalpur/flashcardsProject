@@ -20,27 +20,37 @@ function DeckStudy({ abortController }) {
 
 	// get deck when first rendered.
 	useEffect(() => {
-		getDeck();
-
+    getDeck();
+    async function getDeck() {
+      try {
+        const response = await readDeck(deckId, abortController.signal);
+        setDeck(response);
+      }
+      catch(error) {
+        if(error.name !== "AbortError") {
+          throw error;
+        }
+      }
+    }
 		return () => {
 			abortController.abort();
 		};
-	}, []);
+	}, [abortController, deckId]);
 	
-	/**
-	 * Fetches the current deck from the database.
-	 */
-	async function getDeck() {
-		try {
-			const response = await readDeck(deckId, abortController.signal);
-			setDeck(response);
-		}
-		catch(error) {
-			if(error.name !== "AbortError") {
-				throw error;
-			}
-		}
-	}
+	// /**
+	//  * Fetches the current deck from the database.
+	//  */
+	// async function getDeck() {
+	// 	try {
+	// 		const response = await readDeck(deckId, abortController.signal);
+	// 		setDeck(response);
+	// 	}
+	// 	catch(error) {
+	// 		if(error.name !== "AbortError") {
+	// 			throw error;
+	// 		}
+	// 	}
+	// }
 	
 	if(Object.keys(deck).length === 0) return null;
 

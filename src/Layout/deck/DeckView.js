@@ -30,7 +30,7 @@ function DeckView({ removeDeck, removeCard, abortController }) {
 		return () => {
 			abortController.abort();
 		};
-	}, [setDeck]);
+	}, [abortController, deckId]);
 	
 	// /**
 	//  * Fetches the current deck from the database.

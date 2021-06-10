@@ -19,8 +19,20 @@ function Layout() {
 
 	// get decks when first rendered.
 	useEffect(() => {
-		getDecks();
-
+    const abortController = new AbortController();
+		setDecks([]);
+    async function getDecks() {
+      try {
+        const response = await listDecks(abortController.signal);
+        setDecks(response);
+      }
+      catch(error) {
+        if(error.name !== "AbortError") {
+          throw error;
+        }
+      }
+    }
+    getDecks();
 		return () => {
 			abortController.abort();
 		};
