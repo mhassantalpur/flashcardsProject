@@ -16,28 +16,36 @@ function DeckView({ removeDeck, removeCard, abortController }) {
 	// get deck when first rendered.
 	useEffect(() => {
 		getDeck();
-
+    async function getDeck() {
+      try {
+        const response = await readDeck(deckId, abortController.signal);
+        setDeck(response);
+      }
+      catch(error) {
+        if(error.name !== "AbortError") {
+          throw error;
+        }
+      }
+    }
 		return () => {
 			abortController.abort();
 		};
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [setDeck]);
 	
-	/**
-	 * Fetches the current deck from the database.
-	 */
-	async function getDeck() {
-		try {
-			const response = await readDeck(deckId, abortController.signal);
-			setDeck(response);
-		}
-		catch(error) {
-			if(error.name !== "AbortError") {
-				throw error;
-			}
-		}
-	}
+	// /**
+	//  * Fetches the current deck from the database.
+	//  */
+	// async function getDeck() {
+	// 	try {
+	// 		const response = await readDeck(deckId, abortController.signal);
+	// 		setDeck(response);
+	// 	}
+	// 	catch(error) {
+	// 		if(error.name !== "AbortError") {
+	// 			throw error;
+	// 		}
+	// 	}
+	// }
 	
 	if(Object.keys(deck).length === 0) return null;
 
